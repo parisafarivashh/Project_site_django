@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from .models import Order, Category,  Profile, Product, ItemOrder
@@ -85,13 +86,14 @@ class SignUpSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(email=validated_data['email'], username=validated_data['username'])
-        user.set_password(validated_data['password'])
-        user.save()
-        token = Token.objects.create(user=user)
-        token.save()
-        profile = Profile.objects.create(user=user)
-        profile.save()
-        order = Order.objects.create(user=user)
-        order.save()
-        return user
+        with transaction.atomic():
+            user = User.objects.create_user(email=validated_data['email'], username=validated_data['username'])
+            user.set_password(validated_data['password'])
+            user.save()
+            token = Token.objects.create(user=user)
+            token.save()
+            profile = Profile.objects.create(user=user)
+            profile.save()
+            order = Order.objects.create(user=user)
+            order.save()
+            return user

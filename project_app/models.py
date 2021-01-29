@@ -151,7 +151,7 @@ class Profile(models.Model):
     Country = models.CharField(max_length=200,null=True)
     City = models.CharField(max_length=200, null=True)
     street = models.CharField(max_length=200, null=True)
-    number_apartment = models.IntegerField()
+    number_apartment = models.IntegerField(null=True)
 
     def __unicode__(self):
         return self.user.email
