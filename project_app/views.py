@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework.decorators import action, api_view
 from django.http import Http404
-from django.shortcuts import render
 from django.db import transaction
 from rest_framework import generics, viewsets, status
 from rest_framework.generics import get_object_or_404
@@ -13,8 +12,9 @@ from .serializers import SignUpSerializer, UserListSerializers, CategorySerializ
 from .permissions import IsAdmin, IsOwn, UserPermissions
 from .models import Profile, Product, Category, Order, ItemOrder
 from django.contrib.auth import get_user_model
-
 User = get_user_model()
+
+
 @api_view(['GET'])
 def api_root(request):
     return Response({
@@ -104,12 +104,6 @@ class ProductsView(viewsets.ModelViewSet):
     permission_classes = (UserPermissions,)
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-
-    # def get_permissions(self):
-    #     Your logic should be all here
-    #     if self.action in ('create', 'update', 'destroy'):
-    #         self.permission_classes = (UserPermissions, IsAuthenticated,)
-    #     return super(self.__class__, self).get_permissions()
 
 
 class ProfileView(generics.RetrieveUpdateDestroyAPIView):
